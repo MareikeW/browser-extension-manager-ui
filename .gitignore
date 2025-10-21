@@ -29,10 +29,6 @@ coverage
 
 *.tsbuildinfo
 
-assets
-components
-App.vue
-main.js
 .vscode
 public
 vite.config.js
