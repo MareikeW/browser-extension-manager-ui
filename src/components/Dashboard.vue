@@ -6,20 +6,41 @@ export default {
   components: { Card },
   data() {
     return {
-      items: [],
+      cards: [],
+      filter: "all", // standardfilter
     };
   },
   mounted() {
-    this.loadData();
+    this.loadCards();
   },
   methods: {
-    loadData() {
-      fetch("../../data.json")
-        .then((response) => response.json())
-        .then((data) => {
-          this.items = data;
-        })
-        .catch((error) => console.log("Error loading data:", error));
+    async loadCards() {
+      try {
+        const response = await fetch("../../data.json");
+        this.cards = await response.json();
+      } catch (error) {
+        console.error("Fehler beim Laden der Daten:", error);
+      }
+    },
+    updateCardStatus(cardName, newStatus) {
+      const card = this.cards.find(card => card.name === cardName);
+      if (card) {
+        card.isActive = newStatus; // Status aktualisieren
+      }
+    },
+    async removeCard(cardName) {
+      this. cards = this.cards.filter(card => card.name !== cardName);
+    }
+  },
+  computed: {
+    filteredCards() {
+      if (this.filter === "all") {
+        return this.cards;
+      } else if (this.filter === "active") {
+        return this.cards.filter((card) => card.isActive);
+      } else {
+        return this.cards.filter((card) => !card.isActive);
+      }
     },
   },
 };
@@ -29,19 +50,21 @@ export default {
   <main>
     <h1 class="title">Extension List</h1>
     <div class="filter-container">
-      <button>All</button>
-      <button>Active</button>
-      <button>Inactive</button>
+      <button class="light" :class="{ active: filter === 'all' }" @click="filter = 'all'">All</button>
+      <button class="light" :class="{ active: filter === 'active' }" @click="filter = 'active'">Active</button>
+      <button class="light" :class="{ active: filter === 'inactive' }" @click="filter = 'inactive'">Inactive</button>
     </div>
     <section>
       <div class="card-container">
         <Card
-          v-for="item in items"
-          :key="item.name"
-          :logo="item.logo"
-          :title="item.name"
-          :description="item.description"
-          :status="item.isActive"
+          v-for="card in filteredCards"
+          :key="card.name"
+          :logo="card.logo"
+          :title="card.name"
+          :description="card.description"
+          :status="card.isActive"
+          :onStatusChange="(newStatus) => updateCardStatus(card.name, newStatus)"
+          :onRemove="removeCard"
         />
       </div>
     </section>
@@ -49,6 +72,17 @@ export default {
 </template>
 
 <style scoped>
+.title {
+  text-align: center;
+}
+
+.filter-container {
+  margin: 1.5rem auto 2.5rem auto;
+  width: 295px;
+  display: flex;
+  justify-content: space-between;
+}
+
 .card-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, 1fr);

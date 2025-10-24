@@ -6,6 +6,24 @@ export default {
     title: String,
     description: String,
     status: Boolean,
+    onStatusChange: Function,
+    onRemove: Function,
+  },
+  data() {
+    return {
+      isRemoveButtonActive: false,
+    }
+  },
+  methods: {
+    handleChange(event) {
+      this.onStatusChange(event.target.checked);
+    },
+    removeCard() {
+      this.isRemoveButtonActive = true;
+      setTimeout(() => {
+        this.onRemove(this.title);
+      }, 500);
+    }
   },
 };
 </script>
@@ -18,9 +36,9 @@ export default {
       <p>{{ description }}</p>
     </div>
     <div>
-      <button>Remove</button>
+      <button class="light" :class="{ active: isRemoveButtonActive }" @click="removeCard">Remove</button>
       <label class="switch">
-        <input type="checkbox" />
+        <input type="checkbox" :checked="status" @change="handleChange" />
         <span class="slider round"></span>
       </label>
     </div>
