@@ -3,11 +3,19 @@ import Card from "./Card.vue";
 
 export default {
   name: "Dashboard",
-  components: { Card },
+  components: {
+    Card,
+  },
+  props: {
+    isDarkMode: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       cards: [],
-      filter: "all", // standardfilter
+      filter: "all", // Standardfilter
     };
   },
   mounted() {
@@ -23,14 +31,17 @@ export default {
       }
     },
     updateCardStatus(cardName, newStatus) {
-      const card = this.cards.find(card => card.name === cardName);
+      const card = this.cards.find((card) => card.name === cardName);
       if (card) {
         card.isActive = newStatus; // Status aktualisieren
       }
     },
     async removeCard(cardName) {
-      this. cards = this.cards.filter(card => card.name !== cardName);
-    }
+      this.cards = this.cards.filter((card) => card.name !== cardName);
+    },
+    handleThemeChange(newTheme) {
+      this.isDarkMode = newTheme;
+    },
   },
   computed: {
     filteredCards() {
@@ -47,12 +58,39 @@ export default {
 </script>
 
 <template>
-  <main>
+  <main :class="{ light: !isDarkMode, dark: isDarkMode }">
     <h1 class="title">Extension List</h1>
     <div class="filter-container">
-      <button class="light" :class="{ active: filter === 'all' }" @click="filter = 'all'">All</button>
-      <button class="light" :class="{ active: filter === 'active' }" @click="filter = 'active'">Active</button>
-      <button class="light" :class="{ active: filter === 'inactive' }" @click="filter = 'inactive'">Inactive</button>
+      <button
+        :class="{
+          active: filter === 'all',
+          light: !isDarkMode,
+          dark: isDarkMode,
+        }"
+        @click="filter = 'all'"
+      >
+        All
+      </button>
+      <button
+        :class="{
+          active: filter === 'active',
+          light: !isDarkMode,
+          dark: isDarkMode,
+        }"
+        @click="filter = 'active'"
+      >
+        Active
+      </button>
+      <button
+        :class="{
+          active: filter === 'inactive',
+          light: !isDarkMode,
+          dark: isDarkMode,
+        }"
+        @click="filter = 'inactive'"
+      >
+        Inactive
+      </button>
     </div>
     <section>
       <div class="card-container">
@@ -63,7 +101,9 @@ export default {
           :title="card.name"
           :description="card.description"
           :status="card.isActive"
-          :onStatusChange="(newStatus) => updateCardStatus(card.name, newStatus)"
+          :onStatusChange="
+            (newStatus) => updateCardStatus(card.name, newStatus)
+          "
           :onRemove="removeCard"
         />
       </div>
@@ -72,6 +112,8 @@ export default {
 </template>
 
 <style scoped>
+
+
 .title {
   text-align: center;
 }

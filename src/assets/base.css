@@ -84,7 +84,10 @@ p {
   color: var(--colors-neutral-600);
 }
 
-main {
+body.light {
   background: linear-gradient(180deg, #ebf2fc 0%, #eefbf9 100%), #fff;
-  height: 100vh;
+}
+
+body.dark {
+  background: linear-gradient(180deg, #04091B 0%, #091540 100%), #FFF;
 }

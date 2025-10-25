@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       isRemoveButtonActive: false,
-    }
+    };
   },
   methods: {
     handleChange(event) {
@@ -23,20 +23,26 @@ export default {
       setTimeout(() => {
         this.onRemove(this.title);
       }, 500);
-    }
+    },
   },
 };
 </script>
 
 <template>
   <div class="card">
-    <div><img :src="logo" alt=""></div>
+    <div><img :src="logo" alt="" /></div>
     <div>
       <h2>{{ title }}</h2>
       <p>{{ description }}</p>
     </div>
     <div>
-      <button class="light" :class="{ active: isRemoveButtonActive }" @click="removeCard">Remove</button>
+      <button
+        class="light"
+        :class="{ active: isRemoveButtonActive }"
+        @click="removeCard"
+      >
+        Remove
+      </button>
       <label class="switch">
         <input type="checkbox" :checked="status" @change="handleChange" />
         <span class="slider round"></span>
@@ -55,7 +61,6 @@ export default {
   background-color: var(--colors-neutral-0);
   box-shadow: 0 2px 2px 0 rgba(194, 206, 225, 0.2),
     0 1px 5px 1px rgba(194, 206, 225, 0.22);
-
   display: grid;
   grid-template-rows: auto 1fr 2.375rem;
   grid-template-columns: 60px 1fr;
